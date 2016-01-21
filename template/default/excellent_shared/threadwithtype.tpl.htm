@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+<div class="row">
+<div class="col-sm-12">
+<form action="{$actionURL}" method="post">
+	<table align="center" class="table table-striped">
+    	<tr>
+        	<td align="center">作者</td>
+            <td align="center">主题</td>
+            <td align="center">回复数</td>
+            <td align="center">查看数</td>
+            <td align="center">最后编辑</td>
+            <td align="center">最后编辑时间</td>
+            <td align="center">发帖日期</td>
+            <td align="center">附件状态</td>
+        </tr>
+        <!--{eval $dropdownMenu="dropdownMenu";$num=1;}-->
+    	<!--{loop $threadwithtype $key $value}-->
+        	<tr>
+            <td><a class="btn btn-block" href="{$gc_current_URL}home.php?mod=space&username={$value->author}">{$value->author}</a></td>
+			<td><a class="btn btn-block" href="{$gc_current_URL}forum.php?mod=viewthread&tid={$value->tid}"> {$value->subject}</a></td>
+            <td>{$value->replies}</td>
+            <td>{$value->views}</td>
+            <td><a class="btn btn-block" href="{$gc_current_URL}home.php?mod=space&username={$value->lastposter}">{$value->lastposter}</a></td>
+			<td><!--{eval echo date("Y-m-d",$value->lastpost);}--></td>
+            <td><!--{eval echo date("Y-m-d",$value->dateline);}--></td>
+            
+        	<td>
+            <!--{if $value->isattach}-->
+                <div class="dropdown">
+                    <!--{eval $Menu=$dropdownMenu.$num; $num+=1;}-->
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="{$Menu}" data-toggle="dropdown">
+                        共有<!--{eval echo count($value->attachment);}-->个附件
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="$Menu">
+                        <li role="presentation" class="active">
+                            <!--{eval  showAttachmentDownload($value);}-->
+                        </li>
+                    </ul>
+                </div>
+                <!--{else}-->
+            	<span class="text-danger">无附件</span>
+            <!--{/if}-->
+            </td>
+            </tr>
+        <!--{/loop}-->
+    </table>
+</form>
+</div>
+</div>
+
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> 

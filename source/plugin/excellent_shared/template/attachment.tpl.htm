@@ -1,0 +1,39 @@
+<!-- 
+	1、本模板用作显示获取附件页面
+	2、本菜单将显示一个帖子对象的多条附件
+    3、变量信息：
+    	1)$actionURL：为接受表单链接
+        2)$ThreadWithAttach:含有附件的帖子对象
+    
+-->
+<link href="../../../../inc/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+
+<div class="row">
+<div class="col-sm-10 col-sm-offset-1">
+<form action="{$actionURL}" method="post">
+	<table align="center" class="table table-striped">
+    	<th>
+        	<td>类型</td>
+            <td>名称</td>
+            <td>大小</td>
+            <td>日期</td>
+            <td>路径</td>
+            <td>链接</td>
+        </th>
+    	<!--{loop $ThreadWithAttach->attachment $key $value}-->
+        	<tr>
+            <td>{$value->attachtype}</td>
+			<td>{$value->filename}</td>
+			<td>{$value->gc_filesize}</td>
+            <td>{$value->dateline}</td>
+			<td>{$value->filepath}</td>
+        	<td><a class="btn btn-primary" href="{$value->downloadURL}">下载</a></td>;
+			
+            </tr>
+        <!--{/loop}-->
+    </table>
+    <input type="button" class="btn btn-primary pull-right" align="middle" value="关闭"/>
+</form>
+</div>
+</div>

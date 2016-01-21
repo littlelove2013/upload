@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<item id="Title"><![CDATA[Discuz! Plugin]]></item>
+	<item id="Version"><![CDATA[X3.2]]></item>
+	<item id="Time"><![CDATA[2015-12-31 16:13]]></item>
+	<item id="From"><![CDATA[Discuz! Board (http://localhost/discuz/upload/)]]></item>
+	<item id="Data">
+		<item id="plugin">
+			<item id="available"><![CDATA[0]]></item>
+			<item id="adminid"><![CDATA[1]]></item>
+			<item id="name"><![CDATA[ÐÂÈËÔù1000½ð±Ò]]></item>
+			<item id="identifier"><![CDATA[SupportGoldForNewMember]]></item>
+			<item id="description"><![CDATA[]]></item>
+			<item id="datatables"><![CDATA[]]></item>
+			<item id="directory"><![CDATA[supportgoldfornewmember/]]></item>
+			<item id="copyright"><![CDATA[¹¨³É]]></item>
+			<item id="modules"><![CDATA[a:0:{}]]></item>
+			<item id="version"><![CDATA[1.0]]></item>
+		</item>
+		<item id="version"><![CDATA[X3.2]]></item>
+		<item id="language">
+			<item id="scriptlang">
+				<item id="info"><![CDATA[³ÌÐò½Å±¾ÎÄ¼þµÄÓïÑÔ°ü]]></item>
+			</item>
+			<item id="templatelang">
+				<item id="info"><![CDATA[Ä£°åÎÄ¼þµÄÓïÑÔ°ü]]></item>
+			</item>
+			<item id="installlang">
+				<item id="info"><![CDATA[°²×°¡¢Éý¼¶¡¢Ð¶ÔØ½Å±¾ÓÃµÄÓïÑÔ°ü]]></item>
+			</item>
+		</item>
+	</item>
+</root>

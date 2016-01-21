@@ -1,0 +1,28 @@
+<div class="row">
+<div class="col-sm-12">
+<form action="{$actionURL}" method="post">
+	<table align="center" class="table table-striped">
+    	<tr>
+        	<td>类型</td>
+            <td>名称</td>
+            <td>大小</td>
+            <td>日期</td>
+            
+            <td>下载</td>
+        </tr>
+        
+    	<!--{loop $ThreadWithAttach->attachment $key $value}-->
+        	<tr>
+            <td>{$value->attachtype}</td>
+			<td>{$value->filename}</td>
+			<td><!--{eval echo ceil($value->gc_filesize/1024)."KB";}--></td>
+            <td><!--{eval echo date("Y-m-d",$value->dateline);}--></td>
+			
+        	<td><a class="btn btn-primary" href="{$value->downloadURL}">下载</a></td>
+			
+            </tr>
+        <!--{/loop}-->
+    </table>
+</form>
+</div>
+</div>
