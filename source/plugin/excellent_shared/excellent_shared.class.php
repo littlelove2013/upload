@@ -1,26 +1,40 @@
-<link href="../../../inc/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
 <?php
+//echo "<link href=\"../../../inc/bootstrap-3.3.5-dist/css/bootstrap.min.css\" rel=\"stylesheet\" type=\"text/css\">";
 /**
  *
  *  quick_reply.class.php 2016-1-1 龚成
  */
-if(!defined('IN_DISCUZ')) {
-　　exit('Access Denied');
+if(!defined("IN_DISCUZ")) {
+	exit('Access Denied');
 }
+
+if(!defined(GC_CONFIG_PATH)){
+	define('GC_CONFIG_PATH',DISCUZ_ROOT."config");
+}
+require_once ("class/DiscuzDataTree.class.php");
+require_once ("class/DB.class.php");
+require_once ("class/ThreadWithType.class.php");
 class plugin_excellent_shared{
 	
 	}
 class plugin_excellent_shared_forum extends plugin_excellent_shared{
 	public function viewthread_postbutton_top_output(){
 		$str='';
-		$querydata=DB::query("SELECT * FROM ".DB::table('forum_gc_excellent_thread')." WHERE `tid`=".$_GET['tid'].";");
+		//$db=GCDB::getInstance();
+		//$querydata=DB::query("SELECT * FROM ".DB::table('forum_gc_excellent_thread')." WHERE `tid`=".$_GET['tid'].";");
+		$querydata=DB::query("SELECT * FROM `".DB::table("forum_gc_excellent_thread")."` WHERE `tid`=".$_GET['tid'].";");
+		//$typearray=ThreadWithType::beCategoried(1);
+		//print_r($typearray);
+		//$tree=new DataTree();
+		print_r(ThreadWithType::getThreadSFun(array(37)));
 		$ex_field=DB::fetch($querydata);
 		if(empty($ex_field)){
 			//若没有数据，则添加数据
 			if($_POST['insert_excellent_submit']){
 				//echo "insert<p>";
 				$sql = "INSERT into ".DB::table('forum_gc_excellent_thread')."(`tid`) VALUES(".$_GET['tid'].");";
-        		DB::query($sql);
+				DB::query($sql);
         		//cpmsg('加精成功!', 'forum.php?mod=viewthread&tid='.$_GET['tid'],'succeed');
 				$str="<button type='submit' name='delete_excellent_submit' value='1' class='btn btn-primary'>
 					<span class='glyphicon glyphicon-export'></span> 撤销加精 

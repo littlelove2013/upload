@@ -1,6 +1,6 @@
 <?php
 //Discuz! cache file, DO NOT modify me!
-//Identify: 3d89a75c038b3006c7b2b6ac028ec9c0
+//Identify: 3a073aa3f44341dadb8afa5875f1317e
 
 $data['setting'] = array (
   'accessemail' => '',
@@ -2621,10 +2621,10 @@ j/n/Y',
   'csspath' => 'data/cache/style_',
   'reginput' => 
   array (
-    'username' => 'GJW73J',
-    'password' => 'ftayWa',
-    'password2' => 'Knk7Kz',
-    'email' => 'jtpPwW',
+    'username' => 'Dt0EUH',
+    'password' => 'R44BNd',
+    'password2' => 'AFnN8g',
+    'email' => 'XuhVJO',
   ),
   'output' => 
   array (

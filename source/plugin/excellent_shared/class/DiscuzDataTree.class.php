@@ -8,7 +8,7 @@
 		exit('Access Denied');
 	}
 	
-	$gc_path=DISCUZ_ROOT."config";
+	///$gc_path=DISCUZ_ROOT."config";
 	//echo $gc_path;
 	//首先获取分类信息并存储在一个结构体内
 	//首先获取root的位置
@@ -47,7 +47,8 @@
 				global $gc_path;
 				//echo realpath($path);
 				//echo $gc_path."\\config_global.php";
-				include($gc_path."\\config_global.php");
+				//echo DISCUZ_ROOT."<br/>";
+				include(DISCUZ_ROOT."config\\config_global.php");
 				//print_r($_config);
 				if(!empty($_config)){
 					$this->db_config=$_config['db']['1'];
@@ -515,7 +516,17 @@
 			//unset($this->data_array[$node->type_id]);
 			//$this->data_array[$node->type_id]=NULL;
 		}
-		
+		/* 按类型名搜索类型
+		 * 反回值为type_id的数组
+		 * 返回形式为array(true/false,vale)
+		 */
+		public static  function searchType($type_name){
+			if(!is_string($type_name)){
+				return array(false,"函数参数错误");
+			}
+			//查找数据库，获取type_id数组
+			$type_name=trim($type_name);
+		}
 		/**
      	+----------------------------------------------------------
      	* 取得数据库类实例

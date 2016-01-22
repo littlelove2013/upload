@@ -93,7 +93,7 @@ EOP;
 	//$muilt_array->updateDataArrayDB($json_muilt_menu);
 	//测试获取当前URL
 	require_once("function/function_getCurrentURL.php");
-	echo "currentURL:".curPageURLWithFactor()."<br/>";
+	echo "<br/>currentURL:".curPageURLWithFactor()."<br/>";
 	//测试获取附件URL
 	require_once("class/ThreadWithType.class.php");
 	//$gc_attach=new GCAttachment(9,1,1,1,1452828687,"ac7547829c69fc9b0df4d23c.jpg",111082,"201601/15/113127yg5g6icztg55qt6z.jpg");
@@ -111,21 +111,25 @@ EOP;
 */
 	//测试类型帖子
 
-	ThreadWithType::insertThreadTypeSFun(1,array("37","58"),NULL);
-	ThreadWithType::insertThreadTypeSFun(2,array("56","58"),"心情舒畅");
+	print_r(ThreadWithType::insertThreadTypeSFun(1,array("37","58"),NULL));
+	print_r(ThreadWithType::insertThreadTypeSFun(2,array("56","58"),"心情舒畅"));
+	echo "<br/>";
 	$data=array("37");
 	$type_thread=new ThreadWithType($data);
-	$type_thread->showThread(ThreadWithType::getThreadSFun($data));
+	$result=ThreadWithType::getThreadSFun($data);
+	if($result[0]) {
+		$type_thread->showThread($result[1]);
+	}
 	//$type_thread->deleteThreadType(2);
 	//测试静态函数
 	//ThreadWithType::insertThreadTypeSFun(2,array("56","60"),"心情舒畅");
 	//ThreadWithType::deleteThreadTypeSFun(2);
 	$threadwithtype=$type_thread->getThreadArray();
 $test=ThreadWithType::beCategoried(1);
-if($test==-1){
+if($test[0]==-1){
 	echo "出错<br/>";
 }
-if(!$test) {
+if($test[0]==0	) {
 	echo "该帖子未分类<br/>";
 }else{
 	print_r($test);

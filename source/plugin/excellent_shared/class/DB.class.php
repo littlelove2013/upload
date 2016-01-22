@@ -29,7 +29,7 @@
 				//echo realpath($path);
 				//echo $gc_path."\\config_global.php";
 				//如果配置为空，则查找配置文件
-				include(GC_CONFIG_PATH."\\config_global.php");
+				include(DISCUZ_ROOT."config\\config_global.php");
 				//print_r($_config);
 				if(!empty($_config)){
 					$this->db_config=$_config['db']['1'];

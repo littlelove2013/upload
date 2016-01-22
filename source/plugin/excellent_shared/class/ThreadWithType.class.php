@@ -1046,7 +1046,7 @@
 				$result[$value]=new GCThreadNode($value);
 				//$this->result[$value]->showThreadNode();
 			}
-			return $result;
+			return array(true,$result);
 		}
 		//获取指定的type数组（不检查type_id数组）
 		public static function getTypeSFun($type_id){
@@ -1300,7 +1300,7 @@
 			//提交事务
 			$db->commit_transaction();
 			//返回
-			return true;
+			return array(true,"success!");
 		}
 		//按照帖子id删除所有的与帖子相关联的分类关系
 		public static function deleteThreadTypeSFun($tid){
@@ -1319,7 +1319,7 @@
 				return array(false,"数据库操作失败，删除分类失败");
 			}
 			$db->commit_transaction();
-			return true;
+			return array(true,"success!");
 		}
 		//判断该tid指定的帖子是否已分类
 		//返回值介绍：-1：查询过程出错
@@ -1330,29 +1330,37 @@
 			//若参数不是数字，则报错
 			if(!is_numeric($tid)) {
 				//echo "参数错误<br/>";
-				return -1;
+				return array(-1,"参数错误");
 			}
 			//查找数据库
 			$db=GCDB::getInstance();
-			$sql="SELECT type_id FROM `{$db->tablepre}forum_gc_excellent_thread` WHERE tid={$tid};";
+			$sql="SELECT type_id,rate FROM `{$db->tablepre}forum_gc_excellent_thread` WHERE tid={$tid};";
 			//echo "sql:{$sql}";
 			$sqldata=$db->query($sql);
 			if(!$sqldata) {
 				//echo "查询数据库出错<br/>";
-				return -1;
+				return array(-1,"数据库查询错误");;
 			}
 			$row=$sqldata->fetch_assoc();
 			if(empty($row)){
 				//没有分类
-				return false;
+				return array(false,"未找到该分类");
 			}
 			//已分类
+			$tree=DataTree::getInstance();
 			$type_array=array();
-			$type_array[]=$row['type_id'];
+			$type_array[0]=array();
+			$type_array[0]['type_id']=$row['type_id'];
+			$type_array[0]['rate']=$row['rate'];
+			$type_array[0]['type_name']=$tree->getOneTreeNode($row['type_id'])->type_name;
+			$i=1;
 			while($row=$sqldata->fetch_assoc()) {
-				$type_array[]=$row['type_id'];
+				$type_array[0]['type_id']=$row['type_id'];
+				$type_array[0]['rate']=$row['rate'];
+				$type_array[0]['type_name']=$tree->getOneTreeNode($row['type_id'])->type_name;
+				$i+=1;
 			}
-			return $type_array;
+			return array(true,$type_array);
 		}
 	}
 
