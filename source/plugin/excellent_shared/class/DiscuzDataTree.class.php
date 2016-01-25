@@ -12,6 +12,7 @@
 	//echo $gc_path;
 	//首先获取分类信息并存储在一个结构体内
 	//首先获取root的位置
+	require_once ("DB.class.php");
 	class DataTreeNode{
 		//本节点数据
 		public $father_type_id;
@@ -23,9 +24,9 @@
 		public $child;
 		function __construct($father_type_id=NULL,$type_id=0,$type_name=NULL,$type_level=0,$child_type_id=array(),$child=array()){
 			$this->father_type_id=$father_type_id;
-			$this->type_id=$type_id;
+			$this->type_id=intval($type_id);
 			$this->type_name=$type_name;
-			$this->type_level=$type_level;
+			$this->type_level=intval($type_level);
 			$this->child_type_id=$child_type_id;
 			$this->child=$child;
 		}
@@ -240,7 +241,32 @@
 				$this->getOneTreeNodeOneTypeid($type_id_array,$value);
 			}
 		}
-		
+		//获取某节点的第level层父节点
+		//输入参数为type_id:查找的起始节点
+		//        	ancesterlevel:查找的目的节点所在层(值域为1到type_level-1)
+		public function getANodeByOtherNode($type_id,$ancesterlevel)
+		{
+			//检查参数
+			if(!is_numeric($type_id)||!is_numeric($ancesterlevel)||$ancesterlevel<=0){
+				return array(false,"getANodeByOtherNode：参数错误:请输入数值型参数");
+			}
+			$type_id=intval($type_id);
+			$ancesterlevel=intval($ancesterlevel);
+			//获取type_id指定的节点
+			$typenode=$this->data_array[$type_id];
+			if(empty($typenode)||$typenode->type_level<$ancesterlevel) {
+				return array(false, "getANodeByOtherNode：参数错误:只能查找其祖先节点");
+			}
+
+			while($typenode->type_level!=$ancesterlevel && $typenode->father_type_id!=NULL){
+				$typenode=$this->data_array[$typenode->father_type_id];
+			}
+			if($typenode->type_level==$ancesterlevel) {
+				return array(true, $typenode);
+			}else{
+				return array(false,"getANodeByOtherNode：未查找到指定层祖先节点");
+			}
+		}
 		//获取全局数组
 		public function getDataArray(){
 			return $this->data_array;
@@ -465,7 +491,7 @@
      	* @return NULL
      	+----------------------------------------------------------
      	*/
-		//删除原来多余菜单（在做完插入之后进行的）
+		//删除原来多余菜单（在做完插;入之后进行的）
 		private function deleteAllExtraMenu($exist_array){
 			return $this->deleteOneExtraMenu($this->root,$exist_array);
 		}
@@ -526,6 +552,17 @@
 			}
 			//查找数据库，获取type_id数组
 			$type_name=trim($type_name);
+			$db=GCDB::getInstance();
+			$sql="SELECT type_id FROM `{$db->tablepre}forum_gc_type_thread` WHERE `type_name` LIKE '%{$type_name}%';";
+			$sqldata=$db->query($sql);
+			if(!$sqldata){
+				return array(false,"数据库查询错误");
+			}
+			$result=array();
+			while($row=$sqldata->fetch_assoc()){
+				$result[]=intval($row['type_id']);
+			}
+			return array(true,$result);
 		}
 		/**
      	+----------------------------------------------------------

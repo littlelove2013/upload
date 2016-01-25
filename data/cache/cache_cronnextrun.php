@@ -1,7 +1,7 @@
 <?php
 //Discuz! cache file, DO NOT modify me!
-//Identify: 508777f5f24dc6bdd8dd346cc1f51a66
+//Identify: ab7f5bddea9746ad094099dc311225e2
 
-$data['cronnextrun'] = '1453456800';
+$data['cronnextrun'] = '1453717800';
 
 ?>

@@ -111,12 +111,13 @@ EOP;
 */
 	//测试类型帖子
 
-	print_r(ThreadWithType::insertThreadTypeSFun(1,array("37","58"),NULL));
+		print_r(ThreadWithType::insertThreadTypeSFun(1,array("37","58"),NULL));
 	print_r(ThreadWithType::insertThreadTypeSFun(2,array("56","58"),"心情舒畅"));
 	echo "<br/>";
 	$data=array("37");
 	$type_thread=new ThreadWithType($data);
-	$result=ThreadWithType::getThreadSFun($data);
+	//$result=ThreadWithType::getThreadSFun($data);
+	$result=ThreadWithType::getOneTypeThreadSFun(array(56));
 	if($result[0]) {
 		$type_thread->showThread($result[1]);
 	}
@@ -126,8 +127,11 @@ EOP;
 	//ThreadWithType::deleteThreadTypeSFun(2);
 	$threadwithtype=$type_thread->getThreadArray();
 $test=ThreadWithType::beCategoried(1);
-if($test[0]==-1){
-	echo "出错<br/>";
+//echo "{$test[0]}<br/>";
+if(intval($test[0]) == -1){
+	echo "出错{$test[0]}<br/>";
+	//print_r($test);
+	echo "<br/>";
 }
 if($test[0]==0	) {
 	echo "该帖子未分类<br/>";
@@ -167,6 +171,7 @@ if($test[0]==0	) {
 	$value=$data_root->type_id;
 	$name=$data_root->type_name;
 	$tree->showTree(1);
+    print_r($tree->getANodeByOtherNode(56,1));
 	//echo DB::table();
 	//echo dirname(__FILE__);
 	//echo $gc_path;

@@ -115,9 +115,9 @@
 				print_r($row);
 				echo "<br/>";
 			}
-			$this->dateline=$row['dateline'];
+			$this->dateline=intval($row['dateline']);
 			$this->filename=$row['filename'];
-			$this->gc_filesize=$row['gc_filesize'];
+			$this->gc_filesize=intval($row['gc_filesize']);
 			$this->filepath=$row['filepath'];
 			//获取其他参数：
 			//$this->getAttachmentURL();
@@ -204,7 +204,7 @@
 			}
 			$data=array();
 			while($row = $sqldata->fetch_assoc()){
-				$data[$row['aid']]=$row['tableid'];
+				$data[$row['aid']]=intval($row['tableid']);
 			}
 			return $data;
 		}
@@ -225,6 +225,7 @@
 		public $dateline;
 		public $lastpost;
 		public $lastposter;
+		public $type;//该帖子主次分类的数组，分为type[main][]和type[subordinate][]分别存储主分类和次分类
 		public $views;//查看次数
 		public $replies;//回复次数
 		public $isattach;//是否有附件
@@ -260,10 +261,11 @@
 				echo "GCThreadNode：未输入构造参数<br/>";
 				exit;
 			}
-			$this->debug=false;
-			$this->tid=$tid;
+			$this->debug=true;
+			$this->tid=intval($tid);
 			if(!$this->init()){
 				echo "GCThreadNode：构造函数出错<br/>";
+				return array(false,"init函数失败");
 			}
 			if($this->debug){
 				echo "GCThreadNode：构造函数成功<br/>";
@@ -294,11 +296,11 @@
 			}
 			$this->author=$row['author'];
 			$this->subject=$row['subject'];
-			$this->dateline=$row['dateline'];
-			$this->lastpost=$row['lastpost'];
+			$this->dateline=intval($row['dateline']);
+			$this->lastpost=intval($row['lastpost']);
 			$this->lastposter=$row['lastposter'];
-			$this->views=$row['views'];//查看次数
-			$this->replies=$row['replies'];//回复次数
+			$this->views=intval($row['views']);//查看次数
+			$this->replies=intval($row['replies']);//回复次数
 			$this->isattach=$row['isattach'];//是否有附件
 			if($this->isattach){
 				//如果有附件，则取附件
@@ -310,13 +312,89 @@
 			}else{
 				$this->attachment=array();//附件数组
 			}
+
+			//获取附件的类型
+
+			$result=ThreadWithType::beCategoried($this->tid);
+			if($this->debug){
+				echo "帖子类别<br/>";
+				print_r($result);
+				echo "<br/>";
+			}
+			if($result[0]==true){
+				//找到分类id数组
+				//对数组排序
+				//type_id的第一层祖先节点id最小的那个为主分类
+				$tree=DataTree::getInstance();
+				$dataarray=$result[1];
+				$total=count($dataarray);
+				$tmpValue=$dataarray[0];
+				$tmp=$tree->getANodeByOtherNode( $tmpValue[type_id],1);//获取第一个值的祖先节点
+				if($tmp[0]){
+					$tmpid=$tmp[1]->type_id;
+				}else{
+					if($this->debug){
+						echo "查找祖先节点失败<br/>";
+						print_r($tmp);
+						echo "<br/>";
+					}
+					return false;
+				}
+				//从1开始
+				//获取次分类
+				for($i=1;$i<$total;$i++){
+					$value=$dataarray[$i];
+					//$value的结构为[type_id]、[rate]、[type_name]
+					$tmp=$tree->getANodeByOtherNode($value[type_id],1);
+					if($tmp[0]){
+						$valueid=$tmp[1]->type_id;
+					}else{
+						if($this->debug){
+							echo "查找祖先节点失败<br/>";
+							print_r($tmp);
+							echo "<br/>";
+						}
+						return false;
+					}
+					//id较小的是主分类，id较大的是次分类
+					//只能有一个主分类，因此大于等于的都是次分类
+					if($tmpid<=$valueid) {
+						//存到次分类
+						$this->type[subordinate][] = $value;
+					}
+					//小于则说明$tmpid指定的是次分类
+					else{
+						$this->type[subordinate][] = $tmpValue;
+						//替换最小值
+						$tmpValue=$value;
+						$tmpid=$valueid;
+					}
+				}
+				//获取主分类
+				$this->type[maintype][]=$tmpValue;
+			}else{
+				//未找到分类id数组
+				$this->type[maintype][][typename]="未分类";
+				$this->type[subordinate][][typename]="未分类";
+			}
+
 			return true;
 		}
+
+		/**
+		 *展示现存数据
+         */
 		public function showThreadNode(){
 			echo '<br/>主题:'.$this->subject."<br/>";
 			echo "帖子ID:".$this->tid."<br/>";
 			echo '作者:'.$this->author."<br/>";
       		echo '发帖时间:'.date("Y-m-d H:i:s",$this->dateline)."<br/>";
+			echo "主分类：{$this->type[maintype][0][type_name]}<br/>";
+			echo "次分类：";
+			foreach($this->type[subordinate] as $value){
+				echo $value[type_name].",";
+			}
+			echo "<br/>";
       		echo '最后修改:'.date("Y-m-d H:i:s",$this->lastpost)."<br/>";
      		echo '最后编辑人:'.$this->lastposter."<br/>";
       		echo '浏览次数:'.$this->views."<br/>";
@@ -336,6 +414,7 @@
 			}
 		}
 	}
+	/*
 	//获取type_id数组指定的所有帖子
 	//1、如果type_id是对应的树结构(level<30),则还要获取其所有子节点的
 	//		方法是，先获取其所有子节点的type_id，然后用或(OR)连接
@@ -343,6 +422,7 @@
 	//		方法：获取或有type_level>=30的type_id和1中树结构，各搜索数据库然后取交集
 	//			但是因为mysql的数据库不支持取交集操作，所以改为对所有取值进行取内连接（INNER JOIN）
 	//3、type_id数组形式为array("type_id"=>"type_level");
+	*/
 	class ThreadWithType{
 		private $debug;
 		//分类id=>level(必须用id来区分各分类，因为分类名可重复)数组
@@ -704,12 +784,14 @@
 			//返回
 			return true;
 		}
+		/*
 		//帖子分类函数
 		//输入参数为$tid(int变量)，$type_id（数组）,$rate（string变量）数组
 		//此为新的插入函数，应用于新的树结构思想
 		//1、将主分类和次分类作为节点的多个不同的子节点，所以必须允许在同一棵树上的两个节点可以联系同一个tid
 		//2、也因此，查重将更加简单：不在需要用过查重整棵树，只需要查重树中是否含有tid即可
 		//3、因此更新函数为原型，参数格式不变
+		*/
 		public function insertThreadType($tid,$type_id,$rate){
 			if($this->debug){
 				echo "开始insertThreadTypeNew函数<br/>";
@@ -950,6 +1032,7 @@
 		}
 		//静态的获取分类帖子函数
 		//参数为含有type_id的数组
+		//获取type_id指定的以及type_id的子孙类指定的帖子
 		//新的获取函数，不包含level检查
 		public static function getThreadSFun($type_id){
 			if(!is_array($type_id)||empty($type_id)){
@@ -1048,6 +1131,64 @@
 			}
 			return array(true,$result);
 		}
+		//静态的获取分类帖子函数
+		//参数为含有type_id的数组
+		//只获取type_id指定的帖子
+		//新的获取函数，不包含level检查
+
+		public static function getOneTypeThreadSFun($type_id){
+			if(!is_array($type_id)||empty($type_id)){
+				//echo "type_id参数非数组形式！参数错误<br/>";
+				return array(false,"type_id参数非数组形式！参数错误");
+			}
+			$db=GCDB::getInstance();
+			//旧版查找level语句
+			//查找数据库
+			$tmptablenum=ord('A');
+			$tmptablechr=chr($tmptablenum);
+
+			$totalsql="
+				SELECT {$tmptablechr}.tid \n
+				FROM `{$db->tablepre}forum_gc_excellent_thread` as {$tmptablechr} \n";//此处记得留空格
+			//获取树节点及其子节点的分类
+			//写sql语句
+			foreach($type_id as $id){
+				$sql="";
+				$tmpoftmptablechr=$tmptablechr;
+				$tmptablenum+=1;
+				$tmptablechr=chr($tmptablenum);
+				//获取该节点及其子孙节点下的所有帖子
+				//获取type_id下的所有帖子（不含子孙节点）
+				//写sql语句
+				$sql="SELECT tid FROM `{$db->tablepre}forum_gc_excellent_thread` WHERE type_id={$id} ";//此处有空格
+				//组装总的sql语句
+				$totalsql.="INNER JOIN \n (".$sql.") as {$tmptablechr} ON {$tmpoftmptablechr}.tid={$tmptablechr}.tid \n";//留空格
+			}
+			$totalsql.=";";
+			echo "sql:".$totalsql."<br/>";
+			//2、得到sql语句之后，执行获得所有的tid，再根据tid获得所有的帖子实例，进行输出
+			$sqldata=$db->query($totalsql);
+			if(!$sqldata){
+				//echo "sql语句出错<br/>";
+				return array(false,"sql语句出错");
+			}
+			$tid=array();
+			while($row=$sqldata->fetch_assoc()){
+				$tid[]=$row['tid'];
+			}
+			if(empty($tid)){
+				//echo "未找到符合分类的帖子<br/>";//即使没有帖子，也应该返回true
+				return array(false,"未找到符合分类的帖子");
+			}
+			$result=array();
+			//获取tid指定的所有帖子
+			foreach($tid as $value){
+				$result[$value]=new GCThreadNode($value);
+				//$this->result[$value]->showThreadNode();
+			}
+			return array(true,$result);
+		}
+
 		//获取指定的type数组（不检查type_id数组）
 		public static function getTypeSFun($type_id){
 			$onlyonetree=0;	
@@ -1330,7 +1471,7 @@
 			//若参数不是数字，则报错
 			if(!is_numeric($tid)) {
 				//echo "参数错误<br/>";
-				return array(-1,"参数错误");
+				return array(intval(-1),"参数错误");
 			}
 			//查找数据库
 			$db=GCDB::getInstance();
@@ -1339,7 +1480,7 @@
 			$sqldata=$db->query($sql);
 			if(!$sqldata) {
 				//echo "查询数据库出错<br/>";
-				return array(-1,"数据库查询错误");;
+				return array(intval(-1),"数据库查询错误sql:".$sql);;
 			}
 			$row=$sqldata->fetch_assoc();
 			if(empty($row)){

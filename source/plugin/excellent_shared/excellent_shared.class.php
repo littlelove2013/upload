@@ -27,7 +27,7 @@ class plugin_excellent_shared_forum extends plugin_excellent_shared{
 		//$typearray=ThreadWithType::beCategoried(1);
 		//print_r($typearray);
 		//$tree=new DataTree();
-		print_r(ThreadWithType::getThreadSFun(array(37)));
+		//print_r(ThreadWithType::getThreadSFun(array(37)));
 		$ex_field=DB::fetch($querydata);
 		if(empty($ex_field)){
 			//若没有数据，则添加数据

@@ -1,0 +1,18 @@
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<form class="navbar-form navbar-left" action="#">
+    <div class="form-group has-feedback">
+        <p class="input-group">
+            <input type="text" list="searchtype" class="form-control col-md-1" placeholder="Search">
+            <a class="btn btn-primary input-group-addon" href="#" type="button">
+                <span class="glyphicon glyphicon-search"></span>
+            </a>
+            <datalist id="searchtype">
+                <!--{loop $data_array $key $value}-->
+                <option label="{$valu->type_name}" value="{$value->type_name}" />
+                <!--{/loop}-->
+            </datalist>
+        </p>
+    </div>
+</form>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
