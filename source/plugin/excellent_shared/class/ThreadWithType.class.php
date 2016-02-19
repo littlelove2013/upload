@@ -261,7 +261,7 @@
 				echo "GCThreadNode：未输入构造参数<br/>";
 				exit;
 			}
-			$this->debug=true;
+			$this->debug=false;
 			$this->tid=intval($tid);
 			if(!$this->init()){
 				echo "GCThreadNode：构造函数出错<br/>";
@@ -325,6 +325,7 @@
 				//找到分类id数组
 				//对数组排序
 				//type_id的第一层祖先节点id最小的那个为主分类
+				//即与root的id相差为1的类型id为主分类
 				$tree=DataTree::getInstance();
 				$dataarray=$result[1];
 				$total=count($dataarray);
@@ -1135,7 +1136,6 @@
 		//参数为含有type_id的数组
 		//只获取type_id指定的帖子
 		//新的获取函数，不包含level检查
-
 		public static function getOneTypeThreadSFun($type_id){
 			if(!is_array($type_id)||empty($type_id)){
 				//echo "type_id参数非数组形式！参数错误<br/>";
@@ -1165,7 +1165,7 @@
 				$totalsql.="INNER JOIN \n (".$sql.") as {$tmptablechr} ON {$tmpoftmptablechr}.tid={$tmptablechr}.tid \n";//留空格
 			}
 			$totalsql.=";";
-			echo "sql:".$totalsql."<br/>";
+			//echo "sql:".$totalsql."<br/>";
 			//2、得到sql语句之后，执行获得所有的tid，再根据tid获得所有的帖子实例，进行输出
 			$sqldata=$db->query($totalsql);
 			if(!$sqldata){
@@ -1496,9 +1496,9 @@
 			$type_array[0]['type_name']=$tree->getOneTreeNode($row['type_id'])->type_name;
 			$i=1;
 			while($row=$sqldata->fetch_assoc()) {
-				$type_array[0]['type_id']=$row['type_id'];
-				$type_array[0]['rate']=$row['rate'];
-				$type_array[0]['type_name']=$tree->getOneTreeNode($row['type_id'])->type_name;
+				$type_array[$i]['type_id']=$row['type_id'];
+				$type_array[$i]['rate']=$row['rate'];
+				$type_array[$i]['type_name']=$tree->getOneTreeNode($row['type_id'])->type_name;
 				$i+=1;
 			}
 			return array(true,$type_array);

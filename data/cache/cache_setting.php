@@ -1,6 +1,6 @@
 <?php
 //Discuz! cache file, DO NOT modify me!
-//Identify: 3a073aa3f44341dadb8afa5875f1317e
+//Identify: 7b409751cc4a9f8c63c34ead18c3e5dd
 
 $data['setting'] = array (
   'accessemail' => '',
@@ -206,16 +206,20 @@ $data['setting'] = array (
   'friendgroupnum' => '8',
   'ftp' => 
   array (
-    'on' => '0',
-    'ssl' => '0',
-    'host' => '',
-    'port' => '21',
-    'username' => '',
-    'password' => '',
-    'attachdir' => '.',
-    'attachurl' => '/',
-    'hideurl' => '0',
+    'on' => '1',
+    'ssl' => '1',
+    'host' => '203.195.150.104',
+    'port' => '9421',
+    'username' => '10010087-0-discuz',
+    'password' => '7a4fmFoio+IEDCL+u0P93dycpakZlrYmHTxKwf9eBQa5hgW73A',
+    'pasv' => '1',
+    'attachdir' => 'gc_folder',
+    'attachurl' => 'http://discuzstorage-10010087.cos.myqcloud.com/gc_folder/test.log/',
     'timeout' => '0',
+    'allowedexts' => '',
+    'disallowedexts' => '',
+    'minsize' => '',
+    'hideurl' => '0',
     'connid' => 0,
   ),
   'globalstick' => '1',
@@ -721,8 +725,8 @@ $data['setting'] = array (
   ),
   'thumbwidth' => '400',
   'thumbheight' => '300',
-  'sourcewidth' => '',
-  'sourceheight' => '',
+  'sourcewidth' => '0',
+  'sourceheight' => '0',
   'thumbquality' => '100',
   'thumbstatus' => '',
   'timeformat' => 'H:i',
@@ -1108,6 +1112,8 @@ j/n/Y',
   'upgrade' => false,
   'wechatredirect' => '',
   'wechatviewpluginid' => '',
+  'thumbsource' => '0',
+  'portalarticleimgthumbclosed' => '0',
   'newusergroupid' => '10',
   'buyusergroupexists' => '0',
   'forumfids' => 
@@ -2621,10 +2627,10 @@ j/n/Y',
   'csspath' => 'data/cache/style_',
   'reginput' => 
   array (
-    'username' => 'Dt0EUH',
-    'password' => 'R44BNd',
-    'password2' => 'AFnN8g',
-    'email' => 'XuhVJO',
+    'username' => 'KfX7zq',
+    'password' => 'Frr22c',
+    'password2' => 'LWJA5M',
+    'email' => 'zYBty7',
   ),
   'output' => 
   array (

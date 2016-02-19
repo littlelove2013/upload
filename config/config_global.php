@@ -103,7 +103,7 @@ $_config['input']['compatible'] = 1;
 
 
 //----------------------------  开启插件设计者模式 ------------------------ //
-$_config['plugindeveloper'] =2;
+$_config['plugindeveloper'] =1;
 
 
 // -------------------  THE END  -------------------- //

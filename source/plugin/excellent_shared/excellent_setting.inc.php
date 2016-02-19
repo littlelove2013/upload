@@ -15,6 +15,7 @@
 	require_once($path."class/DiscuzDataTree.class.php");
 require_once($path."function/function_makeCache.php");
 require_once("class/TypeArray.class.php");
+	require_once ("class/CenterGradation.class.php");
 	$tree=DataTree::getInstance();
 	$new_json = <<<EOT
 		{	"father_type_id":null,
@@ -117,8 +118,9 @@ EOP;
 	$data=array("37");
 	$type_thread=new ThreadWithType($data);
 	//$result=ThreadWithType::getThreadSFun($data);
-	$result=ThreadWithType::getOneTypeThreadSFun(array(56));
+	$result=ThreadWithType::getOneTypeThreadSFun(array(55,54));
 	if($result[0]) {
+		echo "获取该类型帖子成功<br/>";
 		$type_thread->showThread($result[1]);
 	}
 	//$type_thread->deleteThreadType(2);
@@ -176,7 +178,30 @@ if($test[0]==0	) {
 	//echo dirname(__FILE__);
 	//echo $gc_path;
 	//print_r($_G['config']['db']['1']);
-	echo "<font color=#FF0004'>测试文件运行完成</font>";
+
+	//测试中间层文件
+	echo "<br/><font color='#ff8c00'>_______________________________test CenterGradation Class___________________________________</font><br/>";
+	echo "1、判定主分类:";
+	$type_id=54;
+	$result=CenterGradation::isMainType($type_id);
+	if($result[0]){
+		if($result[ismaintype])
+			echo "是主分类<br/>";
+		else
+			echo "是次分类（非主分类）<br/>";
+	}else{
+		echo $result['message']."<br/>";
+	}
+	echo "2、删除主分类关联信息：";
+	/*
+	 * INSERT INTO `gcdiscuzforum_forum_gc_excellent_thread`( `tid`, `type_id`, `rate`) VALUES (3,55,NUll),(3,56,NULL);
+	 * 56是主分类
+	 * 55是次分类
+	 */
+	$type_id=56;
+	$result=CenterGradation::deleteAllThreadWithMainType($type_id);
+	print_r($result);
+	echo "<br/><font color=#FF0004'>测试文件运行完成</font>";
 	//include template("excellent_shared/excellent_setting");
 	/*
 	function getOneTypeTreeNodeFormDB($type_id){
