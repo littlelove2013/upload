@@ -1,6 +1,6 @@
 <?php
 //Discuz! cache file, DO NOT modify me!
-//Identify: 7b409751cc4a9f8c63c34ead18c3e5dd
+//Identify: bd776eaf9fc18d01ce4611126fb32c49
 
 $data['setting'] = array (
   'accessemail' => '',
@@ -211,10 +211,10 @@ $data['setting'] = array (
     'host' => '203.195.150.104',
     'port' => '9421',
     'username' => '10010087-0-discuz',
-    'password' => '7a4fmFoio+IEDCL+u0P93dycpakZlrYmHTxKwf9eBQa5hgW73A',
+    'password' => '582eWLB2EK2V0n8A9Ruth/ZXqYhme+4sNhAL2yapynCvqXQ+YWs',
     'pasv' => '1',
     'attachdir' => 'gc_folder',
-    'attachurl' => 'http://discuzstorage-10010087.cos.myqcloud.com/gc_folder/test.log/',
+    'attachurl' => 'http://discuzstorage-10010087.cos.myqcloud.com/gc_folder/',
     'timeout' => '0',
     'allowedexts' => '',
     'disallowedexts' => '',
@@ -2627,10 +2627,10 @@ j/n/Y',
   'csspath' => 'data/cache/style_',
   'reginput' => 
   array (
-    'username' => 'KfX7zq',
-    'password' => 'Frr22c',
-    'password2' => 'LWJA5M',
-    'email' => 'zYBty7',
+    'username' => 'yN4MPE',
+    'password' => 'mQl7Xd',
+    'password2' => 'R4MU2z',
+    'email' => 'a6T8M0',
   ),
   'output' => 
   array (

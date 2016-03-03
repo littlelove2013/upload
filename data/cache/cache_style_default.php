@@ -1,6 +1,6 @@
 <?php
 //Discuz! cache file, DO NOT modify me!
-//Identify: 3b1f4978cdb7d06adba527a2e48a6d31
+//Identify: 0bde220061562e699e29448123940799
 
 $data['style_default'] = array (
   'styleid' => '1',
@@ -100,7 +100,7 @@ $data['style_default'] = array (
   'boardlogo' => '<img src="static/image/common/logo.png" alt="Discuz! Board" border="0" />',
   'bold' => 'bold',
   'defaultextstyle' => '',
-  'verhash' => 'AhH',
+  'verhash' => 'f2t',
 );
 
 ?>

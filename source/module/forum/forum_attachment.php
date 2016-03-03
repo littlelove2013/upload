@@ -10,8 +10,19 @@
 if(!defined('IN_DISCUZ')) {
 	exit('Access Denied');
 }
+require_once ('Qcloud_cos/Auth.php');
+require_once ('Qcloud_cos/Conf.php');
+require_once ('Qcloud_cos/Cosapi.php');
+//require_once ('Qcloud_cos/Http.php');
+//设置桶名
+//$bucketname="discuz";
+//$expired = time() + Cosapi::EXPIRED_SECONDS;
+//$sign=Auth::appSign($expired,$bucketname);
+//echo $sign.'<br/>';
+
 define('NOROBOT', TRUE);
 @list($_GET['aid'], $_GET['k'], $_GET['t'], $_GET['uid'], $_GET['tableid']) = daddslashes(explode('|', base64_decode($_GET['aid'])));
+//echo $_GET['aid'].'|'. $_GET['k'].'|'. $_GET['t'].'|'. $_GET['uid'].'|'. $_GET['tableid']."<br/>";
 
 $requestmode = !empty($_GET['request']) && empty($_GET['uid']);
 $aid = intval($_GET['aid']);
@@ -233,8 +244,32 @@ $db->close();
 
 
 if($attach['remote'] && !$_G['setting']['ftp']['hideurl'] && $isimage) {
-	dheader('location:'.$_G['setting']['ftp']['attachurl'].'forum/'.$attach['attachment']);
+	//dheader('location:'.$_G['setting']['ftp']['attachurl'].'forum/'.$attach['attachment']);
+	$bucketname="discuz";
+	$expired = time() + Cosapi::EXPIRED_SECONDS;
+	$sign=Auth::appSign($expired,$bucketname);
+	//$url='location:'.$_G['setting']['ftp']['attachurl'].'forum/'.$attach['attachment']."?sign={$sign}";
+	//echo "url:{$url}<br/>";
+	dheader('location:'.$_G['setting']['ftp']['attachurl'].'forum/'.$attach['attachment']."?sign={$sign}");
 }
+/*
+ * 此处为我自己写的代码，为了实现远程附件的下载
+ * 龚成
+ * 2016-3-3
+ */
+if($attach['remote'] && !$_G['setting']['ftp']['hideurl']) {
+	//dheader('location:'.$_G['setting']['ftp']['attachurl'].'forum/'.$attach['attachment']);
+	$bucketname="discuz";
+	$expired = time() + Cosapi::EXPIRED_SECONDS;
+	$sign=Auth::appSign($expired,$bucketname);
+	$url='location:'.$_G['setting']['ftp']['attachurl'].'forum/'.$attach['attachment']."?sign={$sign}";
+	//echo "url:{$url}<br/>";
+	dheader('location:'.$_G['setting']['ftp']['attachurl'].'forum/'.$attach['attachment']."?sign={$sign}");
+}
+/*
+ * 以上为我自己写的代码，为了实现远程附件的下载
+ */
+
 
 $filesize = !$attach['remote'] ? filesize($filename) : $attach['filesize'];
 $attach['filename'] = '"'.(strtolower(CHARSET) == 'utf-8' && strexists($_SERVER['HTTP_USER_AGENT'], 'MSIE') ? urlencode($attach['filename']) : $attach['filename']).'"';
@@ -248,6 +283,7 @@ if($isimage && !empty($_GET['noupdate']) || !empty($_GET['request'])) {
 } else {
 	dheader('Content-Disposition: attachment; filename='.$attach['filename']);
 }
+
 if($isimage) {
 	dheader('Content-Type: image');
 } else {
@@ -282,6 +318,7 @@ if($readmod == 4) {
 }
 
 $attach['remote'] ? getremotefile($attach['attachment']) : getlocalfile($filename, $readmod, $range);
+
 
 function getremotefile($file) {
 	global $_G;

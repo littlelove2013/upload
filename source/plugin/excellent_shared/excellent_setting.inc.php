@@ -15,9 +15,10 @@
 	require_once($path."class/DiscuzDataTree.class.php");
 require_once($path."function/function_makeCache.php");
 require_once("class/TypeArray.class.php");
-	require_once ("class/CenterGradation.class.php");
+	//require_once ("class/CenterGradation.class.php");
 	$tree=DataTree::getInstance();
-	$new_json = <<<EOT
+	echo "josn_menu:".$tree->getOneTreeNodeJson()."<br/>";
+$new_json = <<<EOT
 		{	"father_type_id":null,
 			"type_id":"37",
 			"type_name":"root",
@@ -82,7 +83,7 @@ require_once("class/TypeArray.class.php");
 			}
 		}
 EOT;
-	//$tree->updateDataTreeDB($new_json);
+	$tree->updateDataTreeDB($new_json);
 	
 	
 	$muilt_array=TypeArray::getInstance();

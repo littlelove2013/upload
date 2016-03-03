@@ -530,8 +530,9 @@
 			if(!$rightflag){
 				return false;
 			}
-			//先删除其分类节点
-
+			//先删除其分类节点上的帖子关系
+			if($node->type_level!=0)
+				CenterGradation::deleteAllThreadWithMainType($node->type_id);
 			//再删除本节点
 			$sql = "DELETE FROM `{$this->tablepre}forum_gc_type_thread` WHERE `type_id`=".$node->type_id.";";
 			$sqldata=$this->mysqli->query($sql);
@@ -591,8 +592,8 @@
 	}
 
 
-	//中间层类
-	class CenterGradation
+//中间层类
+class CenterGradation
 {
 	private static $maintype_id=0;
 	//获取主分类的第1层type_id
@@ -656,7 +657,9 @@
      * 删除分类节点下的所有帖子关系（即获取该type_id指定的所有帖子tid并按照tid删除数据库关系表）
      * 1、为次分类，则不做处理，按照数据库级联删除即可
      * 2、若为主分类，则获取与主分类关联的所有帖子tid，并循环按照tid对关系表进行删除
-     *
+     * 3、@return
+	 *     1) 返回正值 ：array('0'=>true,'type'=>'maintype')或者array('0'=>true,'type'=>'subordinate');
+	 *     2）返回false：array('0'=>false,'message'=>"错误信息");
      */
 
 	public static function deleteAllThreadWithMainType($type_id){
